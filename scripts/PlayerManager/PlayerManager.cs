@@ -1,6 +1,7 @@
-﻿using System;
+﻿using GodsVsMe.ItemManager;
+using System;
 using System.Collections.Generic;
-using GodsVsMe.ItemManager;
+using static GodsVsMe.ItemManager.Items;
 
 namespace GodsVsMe.PlayerManager
 {
@@ -50,7 +51,7 @@ namespace GodsVsMe.PlayerManager
             set 
             { 
                 if (value < 0) value = 0; // Health cannot be negative
-                value = health;
+                health = value;
             }
         }
         internal static int XP
@@ -61,7 +62,11 @@ namespace GodsVsMe.PlayerManager
         internal static int GOLD
         {
             get { return gold; }
-            private set { gold = value; }
+            private set 
+            {
+                if (value < 0) value = 0;
+                gold = value; 
+            }
         }
 
         internal static int STRENGTH
@@ -123,41 +128,108 @@ namespace GodsVsMe.PlayerManager
              * For Tank: Physical Damage = 10, Magical Damage = 5,  Evasion Chance = %20
             */
         }
-
-        internal static void AddItemToInventory(Items.Sword sword)
+        #region Inventory Operations
+        internal static void AddItemToInventory(Item item)
         {
-            INVENTORY[0] = sword;
+            int input;
+
+            if (item.TYPE == ItemType.Sword) INVENTORY[0] = item;
+            else if (item.TYPE == ItemType.Armor) INVENTORY[1] = item;
+            else if (item.TYPE == ItemType.Scroll) INVENTORY[2] = item;
+            else if (item.TYPE == ItemType.Potion)
+            {
+                Console.WriteLine("Which potion slot would you like to use?");
+                if (INVENTORY[3] == null) Console.WriteLine("Potion 1: EMPTY");
+                else Console.WriteLine("Potion 1: " + item.NAME);
+                if (INVENTORY[4] == null) Console.WriteLine("Potion 2: EMPTY");
+                else Console.WriteLine("Potion 2: " + item.NAME);
+
+                Console.Write("Selection: ");
+                input = Convert.ToInt32(Console.ReadLine());
+                if (input == 1) INVENTORY[3] = item;
+                else if (input == 2) INVENTORY[4] = item;
+            }
         }
 
-        internal static void AddItemToInventory(Items.Armor armor)
+        internal static void RemoveItemFromInventory(Item item)
         {
-            INVENTORY[1] = armor;
-        }
-
-        internal static void AddItemToInventory(Items.Scroll scroll)
-        {
-            INVENTORY[2] = scroll;
-        }
-
-        internal static void AddItemToInventory(Items.Potion potion, bool isFirstSlot)
-        {
-            if (isFirstSlot) INVENTORY[3] = potion; // First Slot
-            else INVENTORY[4] = potion;             // Second Slot
+            for (int i = 0; i <= INVENTORY.Length; i++)
+            {
+                if (INVENTORY[i] != null && INVENTORY[i].NAME == item.NAME) 
+                {
+                    INVENTORY[i] = null; 
+                    break; 
+                }
+            }
         }
 
         internal static void ShowInventory()
         {
-            Console.WriteLine("Inventory");
-            foreach (var item in inventory)
-            {
-                if (item == null) Console.WriteLine("EMPTY INVENTORY SLOT");
-                else Console.WriteLine(item.NAME);
-            }
+            Console.WriteLine("\nInventory");
+
+            Console.Write("Sword: "); 
+            if (INVENTORY[0] != null) Console.WriteLine(INVENTORY[0].NAME);
+            else Console.WriteLine("EMPTY INVENTORY SLOT");
+
+            Console.Write("Armor: ");
+            if (INVENTORY[1] != null) Console.WriteLine(INVENTORY[1].NAME);
+            else Console.WriteLine("EMPTY INVENTORY SLOT");
+
+            Console.Write("Scroll: ");
+            if (INVENTORY[2] != null) Console.WriteLine(INVENTORY[2].NAME);
+            else Console.WriteLine("EMPTY INVENTORY SLOT");
+
+            Console.Write("Potion 1: ");
+            if (INVENTORY[3] != null) Console.WriteLine(INVENTORY[3].NAME);
+            else Console.WriteLine("EMPTY INVENTORY SLOT");
+
+            Console.Write("Potion 2: ");
+            if (INVENTORY[4] != null) Console.WriteLine(INVENTORY[4].NAME);
+            else Console.WriteLine("EMPTY INVENTORY SLOT");
         }
 
+        internal static bool isSlotEmpty(Item item)
+        {
+            if (item.TYPE == ItemType.Sword)
+            {
+                if (INVENTORY[0] == null) return true;
+                else return false;
+            }
+            else if (item.TYPE == ItemType.Armor)
+            {
+                if (INVENTORY[1] == null) return true;
+                else return false;
+            }
+            else if (item.TYPE == ItemType.Scroll)
+            {
+                if (INVENTORY[2] == null) return true;
+                else return false;
+            }
+            else if (item.TYPE == ItemType.Potion)
+            {
+                if (INVENTORY[3] == null || INVENTORY[4] == null) return true;
+                else return false;
+            }
+            else return false;
+        }
+
+        internal static Item ReturnItemInSlot(Item item)
+        {
+            if (item.TYPE == ItemType.Sword) return INVENTORY[0];
+            else if (item.TYPE == ItemType.Armor) return INVENTORY[1];
+            else if (item.TYPE == ItemType.Scroll) return INVENTORY[2];
+            else if (item.TYPE == ItemType.Potion)
+            {
+                if (INVENTORY[3] != null) return INVENTORY[3];
+                else if (INVENTORY[4] != null) return INVENTORY[4];
+                else return null;
+            }
+            else return null;
+        }
+        #endregion
         internal static void ShowAllAttributes()
         {
-            Console.WriteLine("Username: " + username);
+            Console.WriteLine("\nUsername: " + username);
             Console.WriteLine("Race: " + race);
             Console.WriteLine("Health: " + HEALTH);
             Console.WriteLine("Level: " + LEVEL);
@@ -169,6 +241,13 @@ namespace GodsVsMe.PlayerManager
             Console.WriteLine("Physical Damage: " + PHYSICAL_DAMAGE);
             Console.WriteLine("Magical Damage: " + MAGICAL_DAMAGE);
             Console.WriteLine("Evasion Chance: " + EVASION_CHANCE * 100 + "%");
+        }
+
+        internal static void ChangeGold(int gold_amount)
+        {
+            Console.WriteLine($"Old Gold Amount: {GOLD}");
+            GOLD += gold_amount;
+            Console.WriteLine($"New Gold Amount: {GOLD}");
         }
         #endregion
     }

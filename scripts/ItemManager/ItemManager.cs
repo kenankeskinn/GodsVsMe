@@ -5,39 +5,41 @@ namespace GodsVsMe.ItemManager
 {
     internal abstract class Item
     {
-        internal ItemType TYPE { get; set; }
-        internal string NAME { get; set; }
-        internal int PRICE { get; set; }
+        public ItemType TYPE { get; protected set; }
+        public string NAME { get; protected set; }
+        public int PRICE { get; protected set; }
+        public EffectType EFFECT_TYPE { get; protected set; }
+        public int EFFECT_AMOUNT { get; protected set; }
     }
 
     internal static class Items
     {
         internal class Sword : Item
         {
-            internal int SwordDamage { get; set; }
             internal Sword(Swords sword)
             {
                 TYPE = ItemType.Sword;
+                EFFECT_TYPE = EffectType.Damage;
 
                 switch (sword)
                 {
                     case Swords.Iron_Sword:
                         NAME = "Iron Sword";
                         PRICE = 100;
-                        SwordDamage = 10;
+                        EFFECT_AMOUNT = 10;
                         break;
                     case Swords.Steel_Long_Sword:
                         NAME = "Steel Long Sword";
                         PRICE = 150;
-                        SwordDamage = 20;
+                        EFFECT_AMOUNT = 20;
                         break;
                     case Swords.Excalibur:
                         NAME = "Excalibur";
                         PRICE = 250;
-                        SwordDamage = 30;
+                        EFFECT_AMOUNT = 30;
                         break;
                     default:
-                        SwordDamage = 0;
+                        EFFECT_AMOUNT = 0;
                         break;
                 }
             }
@@ -45,30 +47,30 @@ namespace GodsVsMe.ItemManager
 
         internal class Armor : Item
         {
-            internal int ArmorProtection { get; set; }
             internal Armor(Armors armor)
             {
                 TYPE = ItemType.Armor;
+                EFFECT_TYPE = EffectType.Protection;
 
                 switch (armor)
                 {
                     case Armors.Leather_Armor:
                         NAME = "Leather Armor";
                         PRICE = 100;
-                        ArmorProtection = 10;
+                        EFFECT_AMOUNT = 10;
                         break;
                     case Armors.Chainmail_Armor:
                         NAME = "Chainmail Armor";
                         PRICE = 150;
-                        ArmorProtection = 20;
+                        EFFECT_AMOUNT = 20;
                         break;
                     case Armors.Plate_Armor:
                         NAME = "Plate Armor";
                         PRICE = 250;
-                        ArmorProtection = 30;
+                        EFFECT_AMOUNT = 30;
                         break;
                     default:
-                        ArmorProtection = 0;
+                        EFFECT_AMOUNT = 0;
                         break;
                 }
             }
@@ -76,7 +78,6 @@ namespace GodsVsMe.ItemManager
 
         internal class Scroll : Item
         {
-            internal int ScrollDamage { get; set; }
             internal Scroll(Scrolls scroll)
             {
                 TYPE = ItemType.Scroll;
@@ -86,20 +87,21 @@ namespace GodsVsMe.ItemManager
                     case Scrolls.Fireball_Scroll:
                         NAME = "Fireball Scroll";
                         PRICE = 100;
-                        ScrollDamage = 30;
+                        EFFECT_TYPE = EffectType.Damage;
+                        EFFECT_AMOUNT = 30;
                         break;
                     case Scrolls.Ice_Scroll:
                         NAME = "Ice Scroll";
                         PRICE = 150;
-                        ScrollDamage = 40;
+                        EFFECT_AMOUNT = 40;
                         break;
                     case Scrolls.Lightning_Scroll:
                         NAME = "Lightning Scroll";
                         PRICE = 250;
-                        ScrollDamage = 50;
+                        EFFECT_AMOUNT = 50;
                         break;
                     default:
-                        ScrollDamage = 0;
+                        EFFECT_AMOUNT = 0;
                         break;
                 }
             }
@@ -117,14 +119,20 @@ namespace GodsVsMe.ItemManager
                 {
                     case Potions.Health_Potion:
                         NAME = "Health Potion";
+                        EFFECT_TYPE = EffectType.Health;
+                        EFFECT_AMOUNT = 30;
                         PRICE = 100;
                         break;
                     case Potions.Strength_Potion:
                         NAME = "Strength Potion";
+                        EFFECT_TYPE = EffectType.Strength;
+                        EFFECT_AMOUNT = 20;
                         PRICE = 200;
                         break;
                     case Potions.Defense_Potion:
                         NAME = "Defense Potion";
+                        EFFECT_TYPE = EffectType.Defense;
+                        EFFECT_AMOUNT = 20;
                         PRICE = 200;
                         break;
                     default:
@@ -174,11 +182,20 @@ namespace GodsVsMe.ItemManager
         Strength_Potion,
         Defense_Potion
     }
-    public enum ItemType
+    internal enum ItemType
     {
         Sword,
         Armor,
         Scroll,
         Potion
+    }
+
+    internal enum EffectType
+    {
+        Damage,
+        Protection,
+        Health,
+        Strength,
+        Defense
     }
 }

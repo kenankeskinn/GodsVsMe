@@ -44,8 +44,8 @@ namespace GodsVsMe.GameManager
             Console.Write("Selection: ");
             input = Convert.ToInt32(Console.ReadLine());
 
-            if (input == 1) { ItemManager.Market.BuyItems(); }
-            else if (input == 2) { ItemManager.Market.SellItems(); }
+            if (input == 1) { ItemManager.Market.BuyItem(); }
+            else if (input == 2) { ItemManager.Market.SellItem(); }
             else if (input == 3) { Village(); }
             else { Console.Write("Invalid Selection. Please try again."); Console.ReadLine(); Market(); }
         }
